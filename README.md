@@ -33,17 +33,14 @@ All accounts use password: **`Classhi1!`**
 
 ## Why Classhi is actually fun
 
-Lectures can be passive. You sit, you listen, you drift. Classhi flips that dynamic by giving every student a financial stake — even if it's play money — in what happens next.
+CS 1660 lectures are good but it's easy to zone out (only because lecture is 6-8, dw Dan, you're the 🐐). The idea behind Classhi is that if you have $10 of play money riding on whether Dan says "serverless" more than 5 times, you're suddenly paying close attention for the rest of the hour.
 
-**Skin in the game keeps you tuned in.** If you bet YES on "Will Dan say 'serverless' more than 5 times?", you're now actively counting. You're listening for specific words, watching for patterns, predicting behavior. That's active attention — not passive note-taking.
+Once you've placed a bet, you're not passively listening — you're actively tracking. And when you open the market page and see the YES price jump from 50¢ to 70¢ in the first 10 minutes, that's everyone else in the room updating their view at the same time. 
 
-**Markets reveal collective opinion in real time.** When a question opens at 50/50 and the price drifts to 70¢ YES within minutes, that's the class collectively saying *"we think this is likely."* It's a live read on the room that no poll or hand-raise can capture.
+The leaderboard is a small thing but it works. Seeing that you're $260 behind your friend is enough to make you care a bit more next class. Markets settle after Dan resolves them, so there's always something to check after lecture.
 
-**Leaderboard creates friendly stakes.** Seeing Haiden at $1,200 and you at $740 is a tiny nudge to pay closer attention next class. The leaderboard refreshes after every resolution, so there's always a reason to come back.
+There's also a feedback loop for Dan: if "Will a student ask what S3 stands for?" is sitting at 80¢, the class is basically saying that without anyone having to raise their hand.
 
-**The professor gets a signal too.** If "Will a student ask what S3 stands for?" is trading at 80¢, that's the class quietly telling Dan: *this concept isn't landing*. It's ambient feedback without anyone having to raise their hand and admit confusion.
-
-**It's a CS class demoing CS.** The platform runs on 9 AWS services, deploys from a single `sam deploy`, pushes live price updates via WebSocket, and handles atomic bet settlement with DynamoDB transactions. Using the thing you built, in the class you built it for, is a pretty clean loop.
 
 ---
 

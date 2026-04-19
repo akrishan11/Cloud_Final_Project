@@ -127,7 +127,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   }
   const shares = Math.round((amount / (sidePrice / 100)) * 100) / 100;
 
-  const idempotencyKey = `${userId}-${marketId}-${event.requestContext.requestId}`.slice(0, 36);
+  const idempotencyKey = event.requestContext.requestId.slice(0, 36);
 
   const params = {
     ClientRequestToken: idempotencyKey,

@@ -85,19 +85,6 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     };
   }
 
-  const adminIds = (process.env.ADMIN_USER_IDS ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-
-  if (!adminIds.includes(userId)) {
-    return {
-      statusCode: 403,
-      headers: HEADERS,
-      body: JSON.stringify({ error: "Admin access required" }),
-    };
-  }
-
   let body: {
     title?: string;
     description?: string;

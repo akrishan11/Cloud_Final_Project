@@ -59,9 +59,10 @@ export function MarketListPage() {
     navigate('/login', { replace: true });
   };
 
-  const visibleMarkets = isAdmin
-    ? markets
-    : markets.filter((m) => m.status === 'open');
+  const statusOrder = (s: string) => (s === 'open' || s === 'scheduled' ? 0 : 1);
+  const visibleMarkets = [...markets].sort(
+    (a, b) => statusOrder(a.status) - statusOrder(b.status),
+  );
 
   return (
     <div className="min-h-screen bg-classhi-bg dark:bg-dark-bg">

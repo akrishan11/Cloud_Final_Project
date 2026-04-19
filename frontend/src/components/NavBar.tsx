@@ -58,15 +58,13 @@ export function NavBar({ onSignOut }: NavBarProps) {
             Leaderboard
           </button>
 
-          {isAdmin && (
-            <button
-              type="button"
-              onClick={() => navigate('/admin/create-market')}
-              className="text-sm font-semibold text-[#111111] hover:underline dark:text-white"
-            >
-              Create Market
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => navigate('/admin/create-market')}
+            className="text-sm font-semibold text-[#111111] hover:underline dark:text-white"
+          >
+            Create Market
+          </button>
 
           <ThemeToggle />
 
