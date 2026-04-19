@@ -87,7 +87,6 @@ export function HomePage() {
         {/* Non-technical flowchart */}
         <section className="mb-14">
           <h2 className="text-xl font-condensed font-bold text-[#111111] dark:text-white mb-2">How a market works</h2>
-          <p className="text-sm text-gray-500 dark:text-[#8A8A90] mb-6">The user-facing flow, no AWS required.</p>
 
           <div className="overflow-x-auto">
             <div className="flex gap-6 min-w-max items-start">
@@ -135,7 +134,6 @@ export function HomePage() {
         {/* Technical flowchart */}
         <section className="mb-14">
           <h2 className="text-xl font-condensed font-bold text-[#111111] dark:text-white mb-2">How it works under the hood</h2>
-          <p className="text-sm text-gray-500 dark:text-[#8A8A90] mb-6">The AWS architecture behind every click.</p>
 
           <div className="overflow-x-auto">
             <div className="flex gap-6 min-w-max items-start">
@@ -194,12 +192,31 @@ export function HomePage() {
 
         {/* Sign off */}
         <section className="border-t border-gray-200 dark:border-dark-border pt-8">
-          <p className="text-sm text-gray-500 dark:text-[#8A8A90]">
+          <p className="text-sm text-gray-500 dark:text-[#8A8A90] mb-4">
             Built for CS 1660 Cloud Computing, Spring 2026.
           </p>
-          <p className="mt-1 text-sm font-semibold text-[#111111] dark:text-white">
-            — Shreyash, Akash, Aidan, Haiden & Krishna
-          </p>
+          <div className="flex flex-wrap gap-3">
+            {[
+              { name: 'Shreyash', url: 'https://www.linkedin.com/in/shreyash-ranjan/' },
+              { name: 'Akash',    url: 'https://www.linkedin.com/in/akash-krishan/' },
+              { name: 'Aidan',    url: 'https://www.linkedin.com/in/aidanqmchugh/' },
+              { name: 'Haiden',   url: 'https://www.linkedin.com/in/haidenh/' },
+              { name: 'Krishna',  url: 'https://www.linkedin.com/in/krishnakatakota/' },
+            ].map(({ name, url }) => (
+              <a
+                key={name}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-sm font-semibold text-[#111111] hover:border-classhi-green hover:text-classhi-green transition-colors dark:border-dark-border dark:text-white dark:hover:border-classhi-green dark:hover:text-classhi-green"
+              >
+                <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                {name}
+              </a>
+            ))}
+          </div>
         </section>
 
       </main>
