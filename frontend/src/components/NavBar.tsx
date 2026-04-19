@@ -18,7 +18,7 @@ export function NavBar({ onSignOut }: NavBarProps) {
         <img
           src="/logo.png"
           alt="Classhi"
-          className="h-8 cursor-pointer"
+          className="h-12 cursor-pointer"
           onClick={() => navigate('/markets')}
         />
 
