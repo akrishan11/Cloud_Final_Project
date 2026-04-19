@@ -49,7 +49,7 @@ type Side = 'YES' | 'NO' | null;
 export function MarketDetailPage() {
   const { marketId } = useParams<{ marketId: string }>();
   const navigate = useNavigate();
-  const { idToken, balance, refreshSession } = useAuth();
+  const { idToken, balance, isAdmin, refreshSession } = useAuth();
   const [market, setMarket] = useState<Market | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -63,6 +63,9 @@ export function MarketDetailPage() {
 
   const [flashSide, setFlashSide] = useState<'YES' | 'NO' | 'BOTH' | null>(null);
   const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [resolving, setResolving] = useState<'YES' | 'NO' | null>(null);
+  const [resolveError, setResolveError] = useState<string | null>(null);
 
   const handlePriceUpdate = useCallback((update: PriceUpdate) => {
     setMarket((prev) => {
@@ -186,6 +189,40 @@ export function MarketDetailPage() {
       setSubmitError('Failed to place bet. Please try again.');
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleResolve(outcome: 'YES' | 'NO') {
+    if (!marketId || resolving !== null) return;
+    setResolving(outcome);
+    setResolveError(null);
+    try {
+      const res = await apiFetch(`/markets/${marketId}/resolve`, idToken, {
+        method: 'POST',
+        body: JSON.stringify({ outcome }),
+      });
+      if (res.status === 409) {
+        setResolveError('This market has already been resolved.');
+        return;
+      }
+      if (res.status === 403) {
+        setResolveError('Admin access required.');
+        return;
+      }
+      if (!res.ok) {
+        setResolveError('Failed to resolve market. Please try again.');
+        return;
+      }
+      // Success: re-fetch market so status becomes 'resolved' and panel disappears
+      const refetch = await apiFetch(`/markets/${marketId}`, idToken);
+      if (refetch.ok) {
+        const data = (await refetch.json()) as { market: Market };
+        setMarket(data.market);
+      }
+    } catch {
+      setResolveError('Failed to resolve market. Please try again.');
+    } finally {
+      setResolving(null);
     }
   }
 
@@ -325,6 +362,34 @@ export function MarketDetailPage() {
             >
               {ctaLabel}
             </button>
+          </section>
+        ) : isAdmin && market.status === 'closed' ? (
+          <section className="mt-6 rounded-lg border border-gray-200 bg-white p-5">
+            <h2 className="text-xl font-semibold text-[#111111]">Resolve Market</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Select the winning outcome. This action is irreversible.
+            </p>
+            <div className="mt-4 flex gap-3">
+              <button
+                type="button"
+                onClick={() => handleResolve('YES')}
+                disabled={resolving !== null}
+                className="h-11 flex-1 rounded bg-classhi-green text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+              >
+                {resolving === 'YES' ? 'Resolving...' : 'Resolve YES'}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleResolve('NO')}
+                disabled={resolving !== null}
+                className="h-11 flex-1 rounded bg-classhi-coral text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+              >
+                {resolving === 'NO' ? 'Resolving...' : 'Resolve NO'}
+              </button>
+            </div>
+            {resolveError && (
+              <p className="mt-3 text-sm text-classhi-coral">{resolveError}</p>
+            )}
           </section>
         ) : (
           <p className="mt-6 text-sm text-gray-500">Betting is closed for this market.</p>
