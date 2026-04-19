@@ -58,7 +58,9 @@ export function MarketListPage() {
     navigate('/login', { replace: true });
   };
 
-  const openMarkets = markets.filter((m) => m.status === 'open');
+  const visibleMarkets = isAdmin
+    ? markets
+    : markets.filter((m) => m.status === 'open');
 
   return (
     <div className="min-h-screen bg-classhi-bg">
@@ -118,13 +120,13 @@ export function MarketListPage() {
           <p className="text-center text-classhi-coral">Failed to load markets.</p>
         )}
 
-        {!loading && !error && openMarkets.length === 0 && (
+        {!loading && !error && visibleMarkets.length === 0 && (
           <p className="text-center text-gray-500">No open markets yet.</p>
         )}
 
-        {!loading && !error && openMarkets.length > 0 && (
+        {!loading && !error && visibleMarkets.length > 0 && (
           <div className="flex flex-col gap-4">
-            {openMarkets.map((market) => (
+            {visibleMarkets.map((market) => (
               <div
                 key={market.marketId}
                 onClick={() => navigate('/markets/' + market.marketId)}
@@ -134,9 +136,15 @@ export function MarketListPage() {
                   <span className="text-base font-semibold text-[#111111]">
                     {market.title}
                   </span>
-                  <span className="ml-4 shrink-0 text-sm text-gray-500">
-                    {formatTimeLeft(market.closeAt)}
-                  </span>
+                  {market.status === 'open' || market.status === 'scheduled' ? (
+                    <span className="ml-4 shrink-0 text-sm text-gray-500">
+                      {formatTimeLeft(market.closeAt)}
+                    </span>
+                  ) : (
+                    <span className="ml-4 shrink-0 rounded bg-gray-200 px-2 py-0.5 text-xs font-semibold uppercase text-gray-700">
+                      {market.status}
+                    </span>
+                  )}
                 </div>
                 <div className="mt-3 flex items-center gap-3">
                   <span className="rounded px-3 py-1 text-sm font-semibold bg-classhi-green text-white">
