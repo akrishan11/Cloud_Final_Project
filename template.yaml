@@ -125,6 +125,9 @@ Resources:
               KeyType: HASH
           Projection:
             ProjectionType: ALL
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   # ─── API Gateway: HTTP API ───────────────────────────────────────────────────
 
@@ -167,6 +170,71 @@ Resources:
       StageName: prod
       AutoDeploy: true
 
+  WsAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId: !Ref WebSocketApi
+      AuthorizerType: REQUEST
+      AuthorizerUri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WsAuthorizerFunction.Arn}/invocations"
+      IdentitySource:
+        - "route.request.querystring.token"
+      Name: WsJwtAuthorizer
+
+  WsConnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WsConnectFunction.Arn}/invocations"
+
+  WsDisconnectIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WsDisconnectFunction.Arn}/invocations"
+
+  WsConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: "$connect"
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref WsAuthorizer
+      Target: !Sub "integrations/${WsConnectIntegration}"
+
+  WsDisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: "$disconnect"
+      AuthorizationType: NONE
+      Target: !Sub "integrations/${WsDisconnectIntegration}"
+
+  WsAuthorizerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WsAuthorizerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*"
+
+  WsConnectPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WsConnectFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*"
+
+  WsDisconnectPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WsDisconnectFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*"
+
   # ─── Lambda Functions ────────────────────────────────────────────────────────
 
   HealthCheckFunction:
@@ -204,7 +272,7 @@ Resources:
   BroadcastHandlerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: backend/src/handlers/health/
+      CodeUri: backend/src/handlers/ws-broadcast/
       Handler: handler.handler
       Environment:
         Variables:
@@ -445,6 +513,70 @@ Resources:
             Path: /me/positions
             Method: GET
             ApiId: !Ref HttpApi
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: "es2022"
+        Sourcemap: true
+        EntryPoints:
+          - handler.ts
+        External:
+          - "@aws-sdk/*"
+
+  WsAuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/src/handlers/ws-authorizer/
+      Handler: handler.handler
+      Environment:
+        Variables:
+          USER_POOL_ID: !Ref UserPool
+          USER_POOL_CLIENT_ID: !Ref UserPoolClient
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: "es2022"
+        Sourcemap: true
+        EntryPoints:
+          - handler.ts
+        External:
+          - "@aws-sdk/*"
+
+  WsConnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/src/handlers/ws-connect/
+      Handler: handler.handler
+      Environment:
+        Variables:
+          CONNECTIONS_TABLE: !Ref ConnectionsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConnectionsTable
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: "es2022"
+        Sourcemap: true
+        EntryPoints:
+          - handler.ts
+        External:
+          - "@aws-sdk/*"
+
+  WsDisconnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/src/handlers/ws-disconnect/
+      Handler: handler.handler
+      Environment:
+        Variables:
+          CONNECTIONS_TABLE: !Ref ConnectionsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConnectionsTable
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
