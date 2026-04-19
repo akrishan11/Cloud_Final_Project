@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { apiFetch } from '../lib/api';
 import { useMarketWS, type PriceUpdate } from '../hooks/useMarketWS';
+import { NavBar } from '../components/NavBar';
 
 interface Market {
   marketId: string;
@@ -35,8 +36,10 @@ function StatusBadge({ status }: { status: Market['status'] }) {
   const isOpen = status === 'open';
   return (
     <span
-      className={`inline-block rounded px-3 py-1 text-sm font-semibold uppercase ${
-        isOpen ? 'bg-classhi-green text-white' : 'bg-gray-200 text-gray-700'
+      className={`inline-block rounded-full px-4 py-1.5 text-sm font-bold uppercase ${
+        isOpen
+          ? 'bg-classhi-green text-white'
+          : 'bg-gray-200 text-gray-700 dark:bg-[#28282C] dark:text-gray-300'
       }`}
     >
       {status}
@@ -49,7 +52,7 @@ type Side = 'YES' | 'NO' | null;
 export function MarketDetailPage() {
   const { marketId } = useParams<{ marketId: string }>();
   const navigate = useNavigate();
-  const { idToken, email, balance, isAdmin, signOut, refreshSession } = useAuth();
+  const { idToken, balance, isAdmin, signOut, refreshSession } = useAuth();
   const [market, setMarket] = useState<Market | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -134,21 +137,21 @@ export function MarketDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-classhi-bg">
-        <p className="text-gray-500">Loading market...</p>
+      <div className="flex min-h-screen items-center justify-center bg-classhi-bg dark:bg-dark-bg">
+        <p className="text-gray-500 dark:text-[#8A8A90]">Loading market...</p>
       </div>
     );
   }
   if (notFound) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-classhi-bg">
-        <p className="text-gray-500">Market not found.</p>
+      <div className="flex min-h-screen items-center justify-center bg-classhi-bg dark:bg-dark-bg">
+        <p className="text-gray-500 dark:text-[#8A8A90]">Market not found.</p>
       </div>
     );
   }
   if (error || !market) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-classhi-bg">
+      <div className="flex min-h-screen items-center justify-center bg-classhi-bg dark:bg-dark-bg">
         <p className="text-classhi-coral">Failed to load market.</p>
       </div>
     );
@@ -243,65 +246,17 @@ export function MarketDetailPage() {
       ? 'bg-classhi-green'
       : side === 'NO'
       ? 'bg-classhi-coral'
-      : 'bg-gray-300';
+      : 'bg-gray-300 dark:bg-[#28282C]';
 
   return (
-    <div className="min-h-screen bg-classhi-bg">
-      <nav className="border-b border-gray-200 bg-white px-6 py-3">
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <span
-            className="cursor-pointer text-lg font-semibold text-[#111111]"
-            onClick={() => navigate('/markets')}
-          >
-            Classhi
-          </span>
-          <div className="flex items-center gap-4">
-            {email && (
-              <span className="text-sm text-gray-500">
-                {email}
-                {balance !== null && (
-                  <span className="ml-2 font-semibold text-[#111111]">
-                    — ${balance.toLocaleString()}
-                  </span>
-                )}
-              </span>
-            )}
-            <button
-              type="button"
-              onClick={() => navigate('/markets')}
-              className="text-sm font-semibold text-[#111111] hover:underline"
-            >
-              Markets
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/portfolio')}
-              className="text-sm font-semibold text-[#111111] hover:underline"
-            >
-              Portfolio
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/leaderboard')}
-              className="text-sm font-semibold text-[#111111] hover:underline"
-            >
-              Leaderboard
-            </button>
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="text-sm font-semibold text-classhi-coral hover:underline"
-            >
-              Log out
-            </button>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-classhi-bg dark:bg-dark-bg">
+      <NavBar onSignOut={handleSignOut} />
+
       <main className="mx-auto max-w-2xl px-6 py-8">
         <button
           type="button"
           onClick={() => navigate('/markets')}
-          className="mb-6 text-sm text-gray-500 hover:text-[#111111]"
+          className="mb-6 text-sm text-gray-500 hover:text-[#111111] dark:text-[#8A8A90] dark:hover:text-white"
         >
           ← Markets
         </button>
@@ -310,64 +265,52 @@ export function MarketDetailPage() {
           <StatusBadge status={market.status} />
         </div>
 
-        <h1 className="text-2xl font-semibold text-[#111111]">{market.title}</h1>
+        <h1 className="text-2xl font-condensed font-bold tracking-tight text-[#111111] dark:text-white">{market.title}</h1>
 
         {market.description && (
-          <p className="mt-2 text-base text-gray-500">{market.description}</p>
+          <p className="mt-2 text-base text-gray-500 dark:text-[#8A8A90]">{market.description}</p>
         )}
 
-        <div aria-live="polite" className="mt-6 flex items-center gap-4">
-          <span
-            className={`rounded px-6 py-3 text-lg font-semibold bg-classhi-green text-white ${
-              flashSide === 'YES' || flashSide === 'BOTH' ? 'animate-flash-green' : ''
-            }`}
-          >
-            YES {market.yesPrice}¢
-          </span>
-          <span
-            className={`rounded px-6 py-3 text-lg font-semibold bg-classhi-coral text-white ${
-              flashSide === 'NO' || flashSide === 'BOTH' ? 'animate-flash-coral' : ''
-            }`}
-          >
-            NO {market.noPrice}¢
-          </span>
-        </div>
-
         {showCountdown && (
-          <p className="mt-4 text-sm text-gray-500">Closes in {timeLeft}</p>
+          <p className="mt-3 text-sm text-gray-500 dark:text-[#8A8A90]">Closes in {timeLeft}</p>
         )}
 
         {isMarketOpen ? (
-          <section className="mt-6 rounded-lg border border-gray-200 bg-white p-5">
-            <h2 className="text-xl font-semibold text-[#111111]">Place a bet</h2>
+          <section className="mt-6 rounded-lg border border-gray-200 bg-white p-5 dark:border-dark-border dark:bg-dark-card">
+            <h2 className="text-xl font-condensed font-semibold text-[#111111] dark:text-white">Place a bet</h2>
 
-            <div className="mt-4 flex gap-3">
+            {/* Combined price display + side selector — clicking selects that side */}
+            <div aria-live="polite" className="mt-4 flex gap-3">
               <button
                 type="button"
-                onClick={() => setSide('YES')}
-                className={`h-11 flex-1 rounded text-sm font-semibold transition-colors ${
+                onClick={() => setSide(side === 'YES' ? null : 'YES')}
+                className={`flex-1 rounded-full py-2 text-sm font-ticker font-bold transition-all ${
+                  flashSide === 'YES' || flashSide === 'BOTH' ? 'animate-flash-green' : ''
+                } ${
                   side === 'YES'
-                    ? 'bg-classhi-green text-white'
-                    : 'border border-gray-200 bg-white text-[#111111] hover:border-gray-300'
+                    ? 'bg-classhi-green text-white ring-2 ring-classhi-green ring-offset-2 ring-offset-white dark:ring-offset-dark-card'
+                    : 'border-2 border-classhi-green bg-transparent text-classhi-green hover:bg-classhi-green/10'
                 }`}
               >
-                YES
+                Yes {market.yesPrice}¢
               </button>
               <button
                 type="button"
-                onClick={() => setSide('NO')}
-                className={`h-11 flex-1 rounded text-sm font-semibold transition-colors ${
+                onClick={() => setSide(side === 'NO' ? null : 'NO')}
+                className={`flex-1 rounded-full py-2 text-sm font-ticker font-bold transition-all ${
+                  flashSide === 'NO' || flashSide === 'BOTH' ? 'animate-flash-coral' : ''
+                } ${
                   side === 'NO'
-                    ? 'bg-classhi-coral text-white'
-                    : 'border border-gray-200 bg-white text-[#111111] hover:border-gray-300'
+                    ? 'bg-classhi-coral text-white ring-2 ring-classhi-coral ring-offset-2 ring-offset-white dark:ring-offset-dark-card'
+                    : 'border-2 border-classhi-coral bg-transparent text-classhi-coral hover:bg-classhi-coral/10'
                 }`}
               >
-                NO
+                No {market.noPrice}¢
               </button>
             </div>
 
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-[#111111]">Amount</label>
+              <label className="block text-sm font-semibold text-[#111111] dark:text-white">Amount</label>
               <input
                 type="number"
                 min={1}
@@ -375,10 +318,10 @@ export function MarketDetailPage() {
                 value={amountText}
                 onChange={(e) => setAmountText(e.target.value)}
                 placeholder="$"
-                className="mt-1 w-full rounded border border-gray-200 px-3 py-2 text-sm text-[#111111] outline-none focus:border-classhi-green"
+                className="mt-1 w-full rounded border border-gray-200 px-3 py-2 text-sm text-[#111111] outline-none focus:border-classhi-green dark:border-dark-border dark:bg-[#1e1e20] dark:text-white dark:placeholder:text-[#8A8A90] dark:focus:border-classhi-green"
               />
               {balance != null && (
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-[#8A8A90]">
                   Balance: ${balance.toLocaleString()}
                 </p>
               )}
@@ -391,13 +334,13 @@ export function MarketDetailPage() {
             ) : estimatedShares != null && estimatedPayout != null ? (
               <div className="mt-4 space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Estimated shares</span>
-                  <span className="text-sm font-semibold text-[#111111]">
+                  <span className="text-sm text-gray-500 dark:text-[#8A8A90]">Estimated shares</span>
+                  <span className="text-sm font-semibold text-[#111111] dark:text-white">
                     {estimatedShares.toFixed(2)} shares
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Estimated payout</span>
+                  <span className="text-sm text-gray-500 dark:text-[#8A8A90]">Estimated payout</span>
                   <span className="text-sm font-semibold text-classhi-green">
                     ${estimatedPayout.toFixed(2)}
                   </span>
@@ -413,15 +356,15 @@ export function MarketDetailPage() {
               type="button"
               onClick={handleSubmit}
               disabled={!ctaEnabled}
-              className={`mt-4 w-full rounded py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60 ${ctaBg}`}
+              className={`mt-4 w-full rounded-lg py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60 ${ctaBg}`}
             >
               {ctaLabel}
             </button>
           </section>
         ) : isAdmin && market.status === 'closed' ? (
-          <section className="mt-6 rounded-lg border border-gray-200 bg-white p-5">
-            <h2 className="text-xl font-semibold text-[#111111]">Resolve Market</h2>
-            <p className="mt-1 text-sm text-gray-500">
+          <section className="mt-6 rounded-lg border border-gray-200 bg-white p-5 dark:border-dark-border dark:bg-dark-card">
+            <h2 className="text-xl font-condensed font-semibold text-[#111111] dark:text-white">Resolve Market</h2>
+            <p className="mt-1 text-sm text-gray-500 dark:text-[#8A8A90]">
               Select the winning outcome. This action is irreversible.
             </p>
             <div className="mt-4 flex gap-3">
@@ -429,7 +372,7 @@ export function MarketDetailPage() {
                 type="button"
                 onClick={() => handleResolve('YES')}
                 disabled={resolving !== null}
-                className="h-11 flex-1 rounded bg-classhi-green text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+                className="h-11 flex-1 rounded-lg bg-classhi-green text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
               >
                 {resolving === 'YES' ? 'Resolving...' : 'Resolve YES'}
               </button>
@@ -437,7 +380,7 @@ export function MarketDetailPage() {
                 type="button"
                 onClick={() => handleResolve('NO')}
                 disabled={resolving !== null}
-                className="h-11 flex-1 rounded bg-classhi-coral text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+                className="h-11 flex-1 rounded-lg bg-classhi-coral text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
               >
                 {resolving === 'NO' ? 'Resolving...' : 'Resolve NO'}
               </button>
@@ -447,7 +390,7 @@ export function MarketDetailPage() {
             )}
           </section>
         ) : (
-          <p className="mt-6 text-sm text-gray-500">Betting is closed for this market.</p>
+          <p className="mt-6 text-sm text-gray-500 dark:text-[#8A8A90]">Betting is closed for this market.</p>
         )}
       </main>
     </div>

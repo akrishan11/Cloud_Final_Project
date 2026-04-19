@@ -1,6 +1,6 @@
 # Classhi
 
-> Kalshi-style prediction markets for CS 1660 lectures — play-money bets on live class events, settled by the professor, backed by a fully serverless AWS stack that deploys with a single `sam deploy`.
+> Kalshi-style prediction markets for CS 1660 lectures — play-money bets on live class events, settled by Dan, backed by a fully serverless AWS stack that deploys with a single `sam deploy`.
 
 **Course:** CS 1660 Cloud Computing — Final Project
 **Deadline:** April 29, 2026
@@ -10,9 +10,25 @@
 
 ## Overview
 
-Classhi is a lightweight prediction market platform. Students sign up, receive $1000 play-money, and place YES/NO bets on markets created by the professor ("Will the professor say 'AWS' more than 10 times today?"). Bets shift a constant-sum price model; WebSocket pushes drive sub-3-second price updates across all browsers. Markets auto-transition from `scheduled → open → closed` via EventBridge Scheduler; the professor resolves closed markets, triggering atomic payouts to winning position holders.
+Classhi is a lightweight prediction market platform. Students sign up, receive $1000 play-money, and place YES/NO bets on markets created by Dan Mahoney ("Will Dan say 'AWS' more than 10 times today?"). Bets shift a constant-sum price model; WebSocket pushes drive sub-3-second price updates across all browsers. Markets auto-transition from `scheduled → open → closed` via EventBridge Scheduler; Dan Mahoney resolves closed markets, triggering atomic payouts to winning position holders.
 
 The stack is 100% serverless — no EC2, no containers, no VPC. The entire infrastructure is declared in a single `template.yaml` and deploys from a clean clone via `sam build && sam deploy`. A GitHub Actions pipeline auto-deploys both backend and frontend on push to main, authenticated via OIDC (no long-lived AWS keys).
+
+---
+
+## Why Classhi is actually fun
+
+Lectures can be passive. You sit, you listen, you drift. Classhi flips that dynamic by giving every student a financial stake — even if it's play money — in what happens next.
+
+**Skin in the game keeps you tuned in.** If you bet YES on "Will Dan say 'serverless' more than 5 times?", you're now actively counting. You're listening for specific words, watching for patterns, predicting behavior. That's active attention — not passive note-taking.
+
+**Markets reveal collective opinion in real time.** When a question opens at 50/50 and the price drifts to 70¢ YES within minutes, that's the class collectively saying *"we think this is likely."* It's a live read on the room that no poll or hand-raise can capture.
+
+**Leaderboard creates friendly stakes.** Seeing Haiden at $1,200 and you at $740 is a tiny nudge to pay closer attention next class. The leaderboard refreshes after every resolution, so there's always a reason to come back.
+
+**The professor gets a signal too.** If "Will a student ask what S3 stands for?" is trading at 80¢, that's the class quietly telling Dan: *this concept isn't landing*. It's ambient feedback without anyone having to raise their hand and admit confusion.
+
+**It's a CS class demoing CS.** The platform runs on 9 AWS services, deploys from a single `sam deploy`, pushes live price updates via WebSocket, and handles atomic bet settlement with DynamoDB transactions. Using the thing you built, in the class you built it for, is a pretty clean loop.
 
 ---
 

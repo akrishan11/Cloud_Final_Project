@@ -42,12 +42,12 @@ export function SignUpPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-classhi-bg">
-      <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8">
-        <h1 className="text-2xl font-semibold leading-tight text-[#111111]">
+    <div className="flex min-h-screen items-center justify-center bg-classhi-bg dark:bg-dark-bg">
+      <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 dark:border-dark-border dark:bg-dark-card">
+        <h1 className="text-2xl font-condensed font-bold tracking-tight leading-tight text-[#111111] dark:text-white">
           Create your account
         </h1>
-        <p className="mt-2 text-base text-gray-500">
+        <p className="mt-2 text-base text-gray-500 dark:text-[#8A8A90]">
           Join Classhi and start predicting.
         </p>
 
@@ -55,7 +55,7 @@ export function SignUpPage() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-semibold text-[#111111]"
+              className="block text-sm font-semibold text-[#111111] dark:text-white"
             >
               Email address
             </label>
@@ -63,18 +63,18 @@ export function SignUpPage() {
               id="email"
               type="email"
               autoComplete="email"
-              placeholder="you@pitt.edu"
+              placeholder="abc123@pitt.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="mt-1 block w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-base text-[#111111] placeholder:text-gray-500 outline-2 focus:outline-classhi-green"
+              className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-base text-[#111111] placeholder:text-gray-500 outline-2 focus:outline-classhi-green dark:border-dark-border dark:bg-[#1e1e20] dark:text-white dark:placeholder:text-[#8A8A90] dark:focus:border-classhi-green"
             />
           </div>
 
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-semibold text-[#111111]"
+              className="block text-sm font-semibold text-[#111111] dark:text-white"
             >
               Password
             </label>
@@ -86,7 +86,7 @@ export function SignUpPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-1 block w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-base text-[#111111] placeholder:text-gray-500 outline-2 focus:outline-classhi-green"
+              className="mt-1 block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-base text-[#111111] placeholder:text-gray-500 outline-2 focus:outline-classhi-green dark:border-dark-border dark:bg-[#1e1e20] dark:text-white dark:placeholder:text-[#8A8A90] dark:focus:border-classhi-green"
             />
           </div>
 
@@ -101,13 +101,13 @@ export function SignUpPage() {
             disabled={loading}
             aria-busy={loading}
             aria-disabled={loading}
-            className="mt-2 w-full rounded-md bg-classhi-green px-4 py-3 text-base font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-2 w-full rounded-lg bg-classhi-green px-4 py-3 text-base font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? 'Creating account...' : 'Create account'}
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-500">
+        <p className="mt-4 text-center text-sm text-gray-500 dark:text-[#8A8A90]">
           Already have an account?{' '}
           <Link to="/login" className="font-semibold text-classhi-green hover:underline">
             Log in

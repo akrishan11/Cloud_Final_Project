@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { apiFetch } from '../lib/api';
+import { NavBar } from '../components/NavBar';
 
 interface Market {
   marketId: string;
@@ -28,7 +29,7 @@ function formatTimeLeft(closeAt: string): string {
 
 export function MarketListPage() {
   const navigate = useNavigate();
-  const { email, balance, isAdmin, idToken, signOut } = useAuth();
+  const { isAdmin, idToken, signOut } = useAuth();
   const [markets, setMarkets] = useState<Market[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -63,64 +64,16 @@ export function MarketListPage() {
     : markets.filter((m) => m.status === 'open');
 
   return (
-    <div className="min-h-screen bg-classhi-bg">
-      {/* Nav bar */}
-      <nav className="border-b border-gray-200 bg-white px-6 py-3">
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <span className="text-lg font-semibold text-[#111111]">Classhi</span>
-          <div className="flex items-center gap-4">
-            {email && (
-              <span className="text-sm text-gray-500">
-                {email}
-                {balance !== null && (
-                  <span className="ml-2 font-semibold text-[#111111]">
-                    — ${balance.toLocaleString()}
-                  </span>
-                )}
-              </span>
-            )}
-            <button
-              type="button"
-              onClick={() => navigate('/portfolio')}
-              className="text-sm font-semibold text-[#111111] hover:underline"
-            >
-              Portfolio
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/leaderboard')}
-              className="text-sm font-semibold text-[#111111] hover:underline"
-            >
-              Leaderboard
-            </button>
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="text-sm font-semibold text-classhi-coral hover:underline"
-            >
-              Log out
-            </button>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-classhi-bg dark:bg-dark-bg">
+      <NavBar onSignOut={handleSignOut} />
 
-      {/* Main content */}
       <main className="mx-auto max-w-4xl px-6 py-8">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-[#111111]">Markets</h1>
-          {isAdmin && (
-            <button
-              type="button"
-              onClick={() => navigate('/admin/create-market')}
-              className="rounded bg-classhi-green px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
-            >
-              Create Market
-            </button>
-          )}
+          <h1 className="text-2xl font-condensed font-bold tracking-tight text-[#111111] dark:text-white">Markets</h1>
         </div>
 
         {loading && (
-          <p className="text-center text-gray-500">Loading markets...</p>
+          <p className="text-center text-gray-500 dark:text-[#8A8A90]">Loading markets...</p>
         )}
 
         {!loading && error && (
@@ -128,7 +81,7 @@ export function MarketListPage() {
         )}
 
         {!loading && !error && visibleMarkets.length === 0 && (
-          <p className="text-center text-gray-500">No open markets yet.</p>
+          <p className="text-center text-gray-500 dark:text-[#8A8A90]">No open markets yet.</p>
         )}
 
         {!loading && !error && visibleMarkets.length > 0 && (
@@ -137,30 +90,30 @@ export function MarketListPage() {
               <div
                 key={market.marketId}
                 onClick={() => navigate('/markets/' + market.marketId)}
-                className="cursor-pointer rounded-lg border border-gray-200 bg-white p-5 transition-colors hover:border-gray-300"
+                className="cursor-pointer rounded-lg border border-gray-200 bg-white p-5 transition-all hover:border-l-2 hover:border-classhi-green dark:border-dark-border dark:bg-dark-card dark:hover:border-classhi-green"
               >
                 <div className="flex items-start justify-between">
-                  <span className="text-base font-semibold text-[#111111]">
+                  <span className="text-base font-semibold text-[#111111] dark:text-white">
                     {market.title}
                   </span>
                   {market.status === 'open' || market.status === 'scheduled' ? (
-                    <span className="ml-4 shrink-0 text-sm text-gray-500">
+                    <span className="ml-4 shrink-0 text-sm text-gray-500 dark:text-[#8A8A90]">
                       {formatTimeLeft(market.closeAt)}
                     </span>
                   ) : (
-                    <span className="ml-4 shrink-0 rounded bg-gray-200 px-2 py-0.5 text-xs font-semibold uppercase text-gray-700">
+                    <span className="ml-4 shrink-0 rounded bg-gray-200 px-2 py-0.5 text-xs font-semibold uppercase text-gray-700 dark:bg-[#28282C] dark:text-gray-300">
                       {market.status}
                     </span>
                   )}
                 </div>
-                <div className="mt-3 flex items-center gap-3">
-                  <span className="rounded px-3 py-1 text-sm font-semibold bg-classhi-green text-white">
-                    YES {market.yesPrice}¢
+                <div className="mt-3 flex items-center gap-2">
+                  <span className="rounded-full border border-classhi-green px-3 py-0.5 text-xs font-ticker font-semibold text-classhi-green">
+                    Yes {market.yesPrice}¢
                   </span>
-                  <span className="rounded px-3 py-1 text-sm font-semibold bg-classhi-coral text-white">
-                    NO {market.noPrice}¢
+                  <span className="rounded-full border border-classhi-coral px-3 py-0.5 text-xs font-ticker font-semibold text-classhi-coral">
+                    No {market.noPrice}¢
                   </span>
-                  <span className="ml-auto text-sm text-gray-500">
+                  <span className="ml-auto text-xs text-gray-500 dark:text-[#8A8A90]">
                     Vol: ${market.volume.toLocaleString()}
                   </span>
                 </div>

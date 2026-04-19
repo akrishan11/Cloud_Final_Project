@@ -5,6 +5,17 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from './App';
 import './index.css';
 
+// Apply theme before first render to avoid flash
+(function applyTheme() {
+  const stored = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (stored === 'dark' || (!stored && prefersDark)) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+})();
+
 // Validate env vars at startup (fail fast, not silent misconfigure)
 if (!import.meta.env.VITE_USER_POOL_ID) {
   throw new Error('VITE_USER_POOL_ID not set -- check .env.local');

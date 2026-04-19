@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { apiFetch } from '../lib/api';
+import { NavBar } from '../components/NavBar';
 
 interface LeaderRow {
   rank: number;
@@ -18,7 +19,7 @@ interface LeaderboardResponse {
 
 export function LeaderboardPage() {
   const navigate = useNavigate();
-  const { userId, email, balance, idToken, signOut } = useAuth();
+  const { userId, email, idToken, signOut } = useAuth();
   const [top20, setTop20] = useState<LeaderRow[]>([]);
   const [ownRank, setOwnRank] = useState<number | null>(null);
   const [ownBalance, setOwnBalance] = useState<number | null>(null);
@@ -58,10 +59,10 @@ export function LeaderboardPage() {
   const rankNumberClass = (rank: number) =>
     rank <= 3
       ? 'w-8 text-sm font-semibold text-classhi-green'
-      : 'w-8 text-sm font-semibold text-gray-500';
+      : 'w-8 text-sm font-semibold text-gray-500 dark:text-[#8A8A90]';
   const rowClass = (rowUserId: string, isLast: boolean) => {
     const base = 'flex items-center py-3 px-4';
-    const divider = isLast ? '' : ' border-b border-gray-100';
+    const divider = isLast ? '' : ' border-b border-gray-100 dark:border-dark-border';
     const highlight = isCurrentUser(rowUserId)
       ? ' bg-classhi-green/10 border-l-2 border-classhi-green'
       : '';
@@ -71,64 +72,15 @@ export function LeaderboardPage() {
   const ownInTop20 = ownRank != null && ownRank <= 20;
 
   return (
-    <div className="min-h-screen bg-classhi-bg">
-      <nav className="border-b border-gray-200 bg-white px-6 py-3">
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <span
-            className="cursor-pointer text-lg font-semibold text-[#111111]"
-            onClick={() => navigate('/markets')}
-          >
-            Classhi
-          </span>
-          <div className="flex items-center gap-4">
-            {email && (
-              <span className="text-sm text-gray-500">
-                {email}
-                {balance !== null && (
-                  <span className="ml-2 font-semibold text-[#111111]">
-                    — ${balance.toLocaleString()}
-                  </span>
-                )}
-              </span>
-            )}
-            <button
-              type="button"
-              onClick={() => navigate('/markets')}
-              className="text-sm font-semibold text-[#111111] hover:underline"
-            >
-              Markets
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/portfolio')}
-              className="text-sm font-semibold text-[#111111] hover:underline"
-            >
-              Portfolio
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/leaderboard')}
-              className="text-sm font-semibold text-[#111111] hover:underline"
-            >
-              Leaderboard
-            </button>
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="text-sm font-semibold text-classhi-coral hover:underline"
-            >
-              Log out
-            </button>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-classhi-bg dark:bg-dark-bg">
+      <NavBar onSignOut={handleSignOut} />
 
       <main className="mx-auto max-w-4xl px-6 py-8">
-        <h1 className="text-2xl font-semibold text-[#111111]">Leaderboard</h1>
+        <h1 className="text-2xl font-condensed font-bold tracking-tight text-[#111111] dark:text-white">Leaderboard</h1>
 
-        <section className="mt-6 rounded-lg border border-gray-200 bg-white">
+        <section className="mt-6 rounded-lg border border-gray-200 bg-white dark:border-dark-border dark:bg-dark-card">
           {loading && (
-            <p className="py-8 text-center text-sm text-gray-500">Loading leaderboard...</p>
+            <p className="py-8 text-center text-sm text-gray-500 dark:text-[#8A8A90]">Loading leaderboard...</p>
           )}
           {!loading && error && (
             <p className="py-8 text-center text-sm text-classhi-coral">
@@ -136,13 +88,13 @@ export function LeaderboardPage() {
             </p>
           )}
           {!loading && !error && top20.length === 0 && (
-            <p className="py-8 text-center text-sm text-gray-500">
+            <p className="py-8 text-center text-sm text-gray-500 dark:text-[#8A8A90]">
               No players yet. Place a bet to join the leaderboard.
             </p>
           )}
           {!loading && !error && top20.length > 0 && (
             <div>
-              <div className="flex items-center py-2 px-4 border-b border-gray-200 text-sm font-semibold text-gray-500">
+              <div className="flex items-center py-2 px-4 border-b border-gray-200 text-sm font-semibold text-gray-500 dark:border-dark-border dark:text-[#8A8A90]">
                 <span className="w-8">#</span>
                 <span className="flex-1">Player</span>
                 <span>Balance</span>
@@ -154,8 +106,8 @@ export function LeaderboardPage() {
                   title={isCurrentUser(row.userId) ? 'You' : undefined}
                 >
                   <span className={rankNumberClass(row.rank)}>{row.rank}</span>
-                  <span className="flex-1 truncate text-sm text-[#111111]">{row.email}</span>
-                  <span className="text-sm font-semibold text-[#111111]">
+                  <span className="flex-1 truncate text-sm text-[#111111] dark:text-white">{row.email}</span>
+                  <span className="text-sm font-ticker font-semibold text-[#111111] dark:text-white">
                     ${row.balance.toLocaleString()}
                   </span>
                 </div>
@@ -166,17 +118,17 @@ export function LeaderboardPage() {
 
         {!loading && !error && ownRank != null && !ownInTop20 && (
           <>
-            <p className="mt-6 text-sm font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="mt-6 text-sm font-semibold text-gray-500 uppercase tracking-wide dark:text-[#8A8A90]">
               Your Rank
             </p>
-            <section className="mt-2 rounded-lg border border-gray-200 bg-white">
+            <section className="mt-2 rounded-lg border border-gray-200 bg-white dark:border-dark-border dark:bg-dark-card">
               <div
                 className="flex items-center py-3 px-4 bg-classhi-green/10 border-l-2 border-classhi-green"
                 title="You"
               >
-                <span className="w-8 text-sm font-semibold text-gray-500">{ownRank}</span>
-                <span className="flex-1 truncate text-sm text-[#111111]">{email ?? '—'}</span>
-                <span className="text-sm font-semibold text-[#111111]">
+                <span className="w-8 text-sm font-semibold text-gray-500 dark:text-[#8A8A90]">{ownRank}</span>
+                <span className="flex-1 truncate text-sm text-[#111111] dark:text-white">{email ?? '—'}</span>
+                <span className="text-sm font-ticker font-semibold text-[#111111] dark:text-white">
                   ${(ownBalance ?? 0).toLocaleString()}
                 </span>
               </div>
