@@ -79,6 +79,13 @@ export function MarketListPage() {
             )}
             <button
               type="button"
+              onClick={() => navigate('/portfolio')}
+              className="text-sm font-semibold text-[#111111] hover:underline"
+            >
+              Portfolio
+            </button>
+            <button
+              type="button"
               onClick={handleSignOut}
               className="text-sm font-semibold text-classhi-coral hover:underline"
             >
