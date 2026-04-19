@@ -8,11 +8,11 @@ import './index.css';
 // Apply theme before first render to avoid flash
 (function applyTheme() {
   const stored = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (stored === 'dark' || (!stored && prefersDark)) {
-    document.documentElement.classList.add('dark');
-  } else {
+  // Default to dark — only go light if the user explicitly chose it
+  if (stored === 'light') {
     document.documentElement.classList.remove('dark');
+  } else {
+    document.documentElement.classList.add('dark');
   }
 })();
 

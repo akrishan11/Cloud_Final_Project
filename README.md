@@ -4,7 +4,7 @@
 
 **Course:** CS 1660 Cloud Computing — Final Project
 **Deadline:** April 29, 2026
-**Live URL:** `https://<CloudFrontDomainName>.cloudfront.net` (see stack outputs after deploy)
+**Live URL:** https://d1vrs4hix1vyxh.cloudfront.net
 
 ---
 
