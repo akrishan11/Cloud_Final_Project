@@ -30,6 +30,9 @@ interface PositionRecord {
   createdAt: string;
   updatedAt?: string;
   settledAt?: string;
+  outcome?: "YES" | "NO";
+  realizedPnl?: number;
+  payout?: number;
 }
 
 interface MarketRecord {
@@ -53,12 +56,17 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     };
   }
 
-  // Query all open positions for this user (no settledAt)
+  const type = event.queryStringParameters?.type ?? "open";
+  const isSettled = type === "settled";
+
+  // Query positions for this user — open (default) or settled
   const positionsResult = await ddb.send(
     new QueryCommand({
       TableName: POSITIONS_TABLE,
       KeyConditionExpression: "userId = :uid",
-      FilterExpression: "attribute_not_exists(settledAt)",
+      FilterExpression: isSettled
+        ? "attribute_exists(settledAt)"
+        : "attribute_not_exists(settledAt)",
       ExpressionAttributeValues: { ":uid": userId },
     })
   );
@@ -90,6 +98,19 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
   const enriched = positions.map((p) => {
     const market = marketsById[p.marketId];
+    if (isSettled) {
+      return {
+        marketId: p.marketId,
+        marketTitle: market?.title ?? null,
+        side: p.side,
+        shares: p.shares,
+        costBasis: p.costBasis,
+        payout: p.payout ?? 0,
+        realizedPnl: p.realizedPnl ?? 0,
+        outcome: p.outcome ?? null,
+        settledAt: p.settledAt ?? null,
+      };
+    }
     const currentPrice =
       market == null
         ? null
