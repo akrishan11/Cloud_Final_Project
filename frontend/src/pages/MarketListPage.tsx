@@ -68,7 +68,7 @@ function MarketCard({ market, onClick }: { market: Market; onClick: () => void }
       {/* Footer */}
       <div className="flex items-center justify-between border-t border-gray-100 pt-3 dark:border-dark-border">
         <span className="text-xs text-gray-500 dark:text-[#8A8A90]">
-          ${market.volume.toLocaleString()} vol
+          ${(market.volume ?? 0).toLocaleString()} vol
         </span>
         {isActive ? (
           <span className="text-xs text-gray-500 dark:text-[#8A8A90]">
