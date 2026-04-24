@@ -1,10 +1,12 @@
-# Classhi
+<p align="center">
+  <img src="https://raw.githubusercontent.com/akrishan11/Classhi/main/frontend/public/logo.png" width="220" alt="Classhi" />
+</p>
 
 > Kalshi-style prediction markets for CS 1660 lectures — play-money bets on live class events, settled by Dan, backed by a fully serverless AWS stack that deploys with a single `sam deploy`.
 
 **Course:** CS 1660 Cloud Computing — Final Project
-**Deadline:** April 29, 2026
 **Live URL:** https://d1vrs4hix1vyxh.cloudfront.net
+**Presentation:** [AWS Services Overview](https://docs.google.com/presentation/d/1JhoBstbPhS3i7MwVkMsvE7GQdVNB1bqFRj1HIeuMLro/edit?usp=sharing)
 
 ---
 
