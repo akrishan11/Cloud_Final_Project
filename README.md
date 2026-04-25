@@ -7,6 +7,13 @@
 **Course:** CS 1660 Cloud Computing — Final Project
 **Live URL:** https://d1vrs4hix1vyxh.cloudfront.net
 **Presentation:** [AWS Services Overview](https://docs.google.com/presentation/d/1JhoBstbPhS3i7MwVkMsvE7GQdVNB1bqFRj1HIeuMLro/edit?usp=sharing)
+**Demo Video:** [Watch on YouTube](https://youtu.be/yV5t_gOwy3o)
+
+<p align="center">
+  <a href="https://youtu.be/yV5t_gOwy3o">
+    <img src="https://img.youtube.com/vi/yV5t_gOwy3o/maxresdefault.jpg" width="600" alt="Classhi Demo Video" />
+  </a>
+</p>
 
 ---
 
