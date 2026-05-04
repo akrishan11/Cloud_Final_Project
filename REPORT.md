@@ -71,11 +71,3 @@ We also got a real appreciation for how much the SAM framework abstracts away. D
 On the product side, the phantom liquidity seed was a late discovery. Without seeding the market volume to 100 on creation, the first bet of $10 would move a market from 50¢ to 99¢, which makes no sense for something that's genuinely uncertain. Adding the seed made the pricing feel real.
 
 If we were to do this again, we'd probably set up a proper dev/staging environment earlier. We were deploying directly to production for most of the project, which worked but made it stressful to push experimental changes. We'd also look into LMSR pricing from the start — the constant-sum model is a simplification that limits the expressiveness of the markets.
-
----
-
-## How It Fits the Course
-
-This project ended up being a pretty direct application of what we covered in CS 1660. We touched on managed compute (Lambda), managed storage (DynamoDB, S3), managed auth (Cognito), event-driven architecture (Streams, EventBridge), CDN and edge delivery (CloudFront), and infrastructure as code (SAM/CloudFormation). The real-time component pushed us to think about how different AWS services connect to each other, which is exactly the kind of systems thinking the course was building toward.
-
-The fact that it's actually running and being used by classmates made it more interesting to build than a hypothetical project. When you know your friends are placing real bets on it, you care a lot more about whether the balance deduction is atomic.
